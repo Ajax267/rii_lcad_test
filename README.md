@@ -10,6 +10,3 @@ php upload.php -d ./arquivosTeste/ --conf conf_old.conf
 
 
 php upload.php -d ./arquivos/ --conf conf_baixar.conf
-
-10.9.8.15
-sudo psql -U root moodle3
