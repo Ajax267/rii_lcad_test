@@ -29,7 +29,7 @@ function result_query($MySQL){
 	mdl_grade_grades.rawgrademin,
 	mdl_grade_grades.rawgrademax,
 	mdl_grade_grades.id AS id_grade_grades,
-	mdl_course_modules.idnumber AS idws,
+	mdl_course_modules.idnumber AS idnumber,
 	IFNULL(
 			 (SELECT mdl_grade_grades_professor.finalGRADE
 			  FROM mdl_grade_grades AS mdl_grade_grades_professor, mdl_user

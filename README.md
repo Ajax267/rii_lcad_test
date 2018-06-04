@@ -9,4 +9,7 @@ Melhorar a organização do JSON do Moodle, todas as submissões devem estar atr
 php upload.php -d ./arquivosTeste/ --conf conf_old.conf
 
 
-php upload.php -d ./arquivos/ --conf conf_baixar.conf
+php upload.php -d ./arquivos/ --conf file.conf
+
+
+php download.php -d ./arquivos/ --conf file.conf
