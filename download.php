@@ -24,6 +24,7 @@ $data = $result->{'anexos'};
 $start = microtime();
 $array = $client->normalize_array($data,$client->getURL(),$client->getToken());
 $end = microtime();
+
 printf("Tempo de organização: %e s\n",($end-$start)/100000);
 
 if($names){
@@ -34,7 +35,6 @@ $start = time();
 $client->mount_directories($array,$args['path']);
 $end = time();
 printf("Tempo de download: %e s\n",($end-$start));
-
 
 $fp = fopen($args['path'].'moodle.json','w');
 fwrite($fp,json_encode($array,JSON_PRETTY_PRINT));
