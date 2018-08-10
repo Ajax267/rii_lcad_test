@@ -3,6 +3,11 @@ include 'lib/Client.php';
 header('Content-type: application/json');
 $args = getArgv($argv);
 $client = new Client($args['conf']);
+
+if($args['rubric']){
+	$client->setRubric();
+}
+
 #print_r($client->getInfo());
 $curl = curl_init();
 curl_setopt_array($curl, array(

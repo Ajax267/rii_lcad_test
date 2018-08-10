@@ -22,6 +22,8 @@ function getArgv($_argv){
 		}else if($_argv[$i] == "--conf"){
 			$i++;
 			$args['conf'] = $_argv[$i];
+		}else if($_argv[$i] == "-r"){
+			$args['rubric'] = true;
 		}
 	}
 	return $args;
@@ -33,6 +35,7 @@ class Client
 
 	public function __construct($file){
 		$this->readConfig($file);
+		$this->Rubric = false;
 	}
 
 	public $info = array();
@@ -179,6 +182,26 @@ class Client
 								fwrite($file_name, print_r($item['name'],true));
 								fclose($file_name);
 							}
+							if($this->ehRubric()){
+								$curl = curl_init();
+								curl_setopt_array($curl, array(
+										CURLOPT_URL => $this->getWSurl(),
+										CURLOPT_POST => 1,
+										CURLOPT_RETURNTRANSFER => 1,
+										CURLOPT_POSTFIELDS => array(
+											'action' => 'rubric',
+											'userinfo' => serialize(array('course' => $item['course'], 'id_submissao' => $item['id_submissao'])),
+											'info' => serialize($this->getInfo())
+										)
+								));
+								$result = curl_exec($curl);
+								curl_close($curl);
+								$result = json_decode($result);
+								foreach($result->rubrics as $info){
+									echo "\n".$info->desc_criterio."\n";
+								}
+							}
+
 						}
 					}
 					$file_notasTreino = fopen($path_notasTreino, "w");
@@ -339,6 +362,17 @@ class Client
 		}
 		
 		return $aux;
+	}
+
+	public function ehRubric()
+	{
+		return $this->Rubric;
+	}
+
+
+	public function setRubric(){
+		echo "Rubrica sera baixada!";
+		$this->Rubric = true;
 	}
 
 

@@ -39,7 +39,8 @@ function result_query($MySQL){
 				mdl_course.shortname AS course_name,
 				mdl_assignsubmission_onlinetext.onlinetext AS resposta,
 				mdl_course.shortname AS course_name,
-				mdl_assignsubmission_onlinetext.onlinetext AS resposta
+				mdl_assignsubmission_onlinetext.onlinetext AS resposta,
+				mdl_assign_submission.id AS id_submissao
 			FROM mdl_course
 			INNER JOIN mdl_course_modules ON mdl_course_modules.module = 1
 			AND mdl_course_modules.course = mdl_course.id
@@ -293,4 +294,49 @@ function atualizaQuestao ($MySQL,$id, $nota, $professor, $feedback)
 		return "Database Error: Unable to update record.";
 	}
 }
+
+
+function obterRubric($MySQL, $user)
+{
+	$sql = "SELECT 
+		mdl_assign_grades.assignment AS id_atividade,
+		mdl_assign_grades.userid AS id_aluno,
+		mdl_gradingform_rubric_criteria.description AS desc_criterio,
+		mdl_gradingform_rubric_levels.score AS nota_criterio,
+		mdl_gradingform_rubric_levels.definition AS decricao_select
+	from 
+		mdl_assign 
+		INNER JOIN mdl_assign_submission ON mdl_assign_submission.assignment = mdl_assign.id
+		INNER JOIN mdl_assignsubmission_onlinetext on mdl_assignsubmission_onlinetext.submission = mdl_assign_submission.id
+
+		INNER JOIN  mdl_assign_grades on mdl_assign_grades.assignment = mdl_assign_submission.assignment
+		INNER JOIN mdl_grading_instances on mdl_assign_grades.id = mdl_grading_instances.itemid
+		INNER JOIN mdl_gradingform_rubric_fillings  on mdl_grading_instances.id = mdl_gradingform_rubric_fillings.instanceid
+		INNER JOIN mdl_gradingform_rubric_levels  on mdl_gradingform_rubric_levels.id = mdl_gradingform_rubric_fillings.levelid
+		INNER JOIN mdl_gradingform_rubric_criteria  on mdl_gradingform_rubric_fillings.criterionid = mdl_gradingform_rubric_criteria.id 
+	where 
+	mdl_assign.course = ".$use['course'].
+	"AND mdl_assign_submission.id = ".$use['id_submissao'].
+	"AND mdl_assign_submission.status ='submitted'
+	AND mdl_grading_instances.status = 0";
+
+	$MySQLi = new MySQLi($MySQL['servidor'], $MySQL['usuario'], $MySQL['senha'], $MySQL['banco']);
+	if (mysqli_connect_errno())
+		trigger_error(mysqli_connect_error(), E_USER_ERROR);
+	$MySQLi->set_charset("utf8");
+
+	$result_data = $MySQLi->query($sql) OR trigger_error($MySQLi->error, E_USER_ERROR);
+	if($result_data){
+		while ($rubric = $result_data->fetch_object()){
+			$rubrics[] = $rubric;
+		}
+		$result_data->close();
+	}
+
+	header('Content-type: application/json');
+	$MySQLi->close();
+
+	return json_encode(array('rubrics' => $rubrics));
+}
+
 ?>

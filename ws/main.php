@@ -20,6 +20,11 @@ if($_POST){
   //header('Content-type: application/json');
   echo $data;
 
+  }elseif($_POST['action'] == "rubric"){
+    $SQL_info = unserialize($_POST['info']);
+    $USER_info = unserialize($_POST['userinfo']);
+    $data = obterRubric($SQL_info, $USER_info);
+    echo $data;
   }
 }
 ?>
