@@ -95,32 +95,32 @@ function result_query($MySQL){
 		}
 		// Free result set
 		$result_data->close();
-		}
+	}
 
-		if($result_names){
+	if($result_names){
 		while ($name = $result_names->fetch_object()){
 			$names[] = $name;
 		}
 		// Free result set
 		$result_names->close();
-		}
+	}
 
-		if($result_feedbacks){
+	if($result_feedbacks){
 		while ($feedback = $result_feedbacks->fetch_object()){
 			$feedbacks[] = $feedback;
 		}
 		// Free result set
 		$result_feedbacks->close();
-		}
+	}
 
 
 
-		header('Content-type: application/json');
-		$MySQLi->close();
+	header('Content-type: application/json');
+	$MySQLi->close();
 
-		//return json_encode(array('anexos' => $anexos, 'feedbacks' => $feedbacks));
-		return json_encode(array('anexos' => $anexos,'users' => $names,'feedbacks' => $feedbacks));
-		//return "OK";
+	//return json_encode(array('anexos' => $anexos, 'feedbacks' => $feedbacks));
+	return json_encode(array('anexos' => $anexos,'users' => $names,'feedbacks' => $feedbacks));
+	//return "OK";
 
 }
 
@@ -315,17 +315,19 @@ function obterRubric($MySQL, $user)
 		INNER JOIN mdl_gradingform_rubric_levels  on mdl_gradingform_rubric_levels.id = mdl_gradingform_rubric_fillings.levelid
 		INNER JOIN mdl_gradingform_rubric_criteria  on mdl_gradingform_rubric_fillings.criterionid = mdl_gradingform_rubric_criteria.id 
 	where 
-	mdl_assign.course = ".$use['course'].
-	"AND mdl_assign_submission.id = ".$use['id_submissao'].
-	"AND mdl_assign_submission.status ='submitted'
+	mdl_assign.course = ".$user['course'].
+	" AND mdl_assign_submission.id = ".$user['id_submissao'].
+	" AND mdl_assign_submission.status ='submitted'
 	AND mdl_grading_instances.status = 0";
 
 	$MySQLi = new MySQLi($MySQL['servidor'], $MySQL['usuario'], $MySQL['senha'], $MySQL['banco']);
+
 	if (mysqli_connect_errno())
 		trigger_error(mysqli_connect_error(), E_USER_ERROR);
-	$MySQLi->set_charset("utf8");
 
+	$MySQLi->set_charset("utf8");
 	$result_data = $MySQLi->query($sql) OR trigger_error($MySQLi->error, E_USER_ERROR);
+
 	if($result_data){
 		while ($rubric = $result_data->fetch_object()){
 			$rubrics[] = $rubric;

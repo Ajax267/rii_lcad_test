@@ -197,11 +197,15 @@ class Client
 								$result = curl_exec($curl);
 								curl_close($curl);
 								$result = json_decode($result);
-								foreach($result->rubrics as $info){
-									echo "\n".$info->desc_criterio."\n";
+								$file_name = fopen("$path/rubric.csv", "w");
+								foreach($result->rubrics as $rubrica){
+									$data[0] = $rubrica->desc_criterio;
+									$data[1] = $rubrica->decricao_select;
+									$data[2] = $rubrica->nota_criterio;
+									fputcsv($file_name, $data,";");
 								}
+								fclose($file_name);
 							}
-
 						}
 					}
 					$file_notasTreino = fopen($path_notasTreino, "w");
@@ -217,8 +221,6 @@ class Client
 				}
 			}
 		}
-	
-
 	}
 
 	//Procura a submissão certa
