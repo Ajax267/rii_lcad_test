@@ -1,7 +1,17 @@
 <?php
 
-include("commands.php");
+include("commands2.php");
 
+if ($_GET['tags']) {
+  $l_tags = explode(",",$_GET['tags']);
+  // Abrir conexão
+  // Informar rubrica
+  // obter atividades com as tags
+  // Fechar conexao
+  $lista = obter_atividade_rubrica($l_tags);
+
+  echo json_encode(array('lista' => $lista));
+}
 
 if($_POST){
   
