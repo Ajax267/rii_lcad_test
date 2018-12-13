@@ -190,7 +190,7 @@ class Client
 										CURLOPT_RETURNTRANSFER => 1,
 										CURLOPT_POSTFIELDS => array(
 											'action' => 'rubric',
-											'userinfo' => serialize(array('course' => $item['course'], 'id_submissao' => $item['id_submissao'])),
+											'userinfo' => serialize(array('course' => $item['course'], 'id_submissao' => $item['id_submissao'], "userid" => $item['userid'])),
 											'info' => serialize($this->getInfo())
 										)
 								));
@@ -199,9 +199,8 @@ class Client
 								$result = json_decode($result);
 								$file_name = fopen("$path/rubric.csv", "w");
 								foreach($result->rubrics as $rubrica){
-									$data[0] = $rubrica->desc_criterio;
-									$data[1] = $rubrica->decricao_select;
-									$data[2] = $rubrica->nota_criterio;
+									$data[0] = $rubrica->rubric_id;
+									$data[1] = $rubrica->nota_criterio;
 									fputcsv($file_name, $data,";");
 								}
 								fclose($file_name);
